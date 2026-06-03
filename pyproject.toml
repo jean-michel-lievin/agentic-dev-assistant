@@ -5,7 +5,14 @@ description = "Agentic Dev Assistant that analyzes Git repositories, generates t
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "faiss-cpu>=1.14.2",
+    "fastapi>=0.136.3",
+    "groq>=1.4.0",
+    "gunicorn>=26.0.0",
+    "pydantic-settings>=2.14.1",
     "ruff>=0.15.15",
+    "sentence-transformers>=5.5.1",
+    "uvicorn>=0.48.0",
 ]
 
 [tool.ruff]
@@ -24,6 +31,7 @@ select = [
     "D",  # pydocstyle
 ]
 ignore = [
+    "D100", # missing docstring in public module
     "D203", # one-blank-line-before-class
     "D213", # multi-line docstring summary
 ]
