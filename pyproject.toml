@@ -1,0 +1,38 @@
+[project]
+name = "agentic-dev-assistant"
+version = "0.1.0"
+description = "Agentic Dev Assistant that analyzes Git repositories, generates tests, and produces technical documentation."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ruff>=0.15.15",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+select = [
+    "E",  # Pycodestyle errors
+    "F",  # Pyflakes
+    "W",  # Pycodestyle warnings
+    "I",  # isort
+    "N",  # pep8-naming
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "SIM",# flake8-simplify
+    "D",  # pydocstyle
+]
+ignore = [
+    "D203", # one-blank-line-before-class
+    "D213", # multi-line docstring summary
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+combine-as-imports = true
