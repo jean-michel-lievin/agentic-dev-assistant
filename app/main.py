@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 
-from app.core.config import settings
+from app.core.config import get_settings
+from app.routers.llm import router as llm_router
+
+settings = get_settings()
 
 app = FastAPI(title="Agentic Dev Assistant")
+app.include_router(llm_router)
 
 
 @app.get("/health")
