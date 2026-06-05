@@ -1,6 +1,5 @@
-from functools import lru_cache
-
 from pydantic_settings import BaseSettings
+from functools import lru_cache
 
 
 class Settings(BaseSettings):
@@ -8,7 +7,7 @@ class Settings(BaseSettings):
 
     # --- ENV variables ---
     groq_api_key: str
-    model_name: str = "llama-3.1-70b"
+    model_name: str = "llama-3.3-70b-versatile"
     repo_storage_path: str = "./data/repos"
     embeddings_path: str = "./data/index"
     environment: str = "development"
@@ -28,7 +27,7 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 
-@lru_cache
+@lru_cache()
 def get_settings() -> Settings:
     """Get the application settings, cached for performance."""
     return Settings()
