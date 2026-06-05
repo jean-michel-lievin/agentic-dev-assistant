@@ -1,4 +1,5 @@
 import os
+
 from app.agents.base_agent import BaseAgent
 
 
@@ -19,7 +20,7 @@ class FileSystemAgent(BaseAgent):
         self.logger.info(f"Reading file at path: {path}")
         full = os.path.join(self.base_path, path)
         try:
-            with open(full, "r", encoding="utf-8", errors="ignore") as f:
+            with open(full, encoding="utf-8", errors="ignore") as f:
                 return f.read()
         except Exception as e:
             self.logger.exception(f"Error reading file: {e}")

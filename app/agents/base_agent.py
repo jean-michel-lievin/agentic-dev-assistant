@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from groq import Groq
+
 from app.core.config import get_settings
 from app.core.logger import get_logger
 
@@ -22,7 +24,6 @@ class BaseAgent(ABC):
 
     def llm(self, prompt: str) -> str:
         """Generate a response from the LLM based on the given prompt."""
-
         return (
             self.client.chat.completions.create(
                 model=self.model,
