@@ -29,3 +29,9 @@ class EmbeddingsEngine:
         scores = cosine_similarity([query_embedding], embeddings)[0]
         top_idx = scores.argsort()[::-1][:top_k]
         return top_idx, scores[top_idx]
+
+
+class EmbeddingIndexer:
+    def __init__(self, repo_path: str, embedding_path: str):
+        self.repo_path = repo_path
+        self.embedding_path = embedding_path

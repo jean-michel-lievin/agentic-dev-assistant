@@ -1,4 +1,5 @@
 from app.agents.code_analysis_agent import CodeAnalysisAgent
+from app.agents.documentation_agent import DocumentationAgent
 from app.agents.echo_agent import EchoAgent
 from app.agents.embeddings_agent import EmbeddingsAgent
 from app.agents.file_system_agent import FileSystemAgent
@@ -26,6 +27,7 @@ class Orchestrator:
             "filesystem": FileSystemAgent(),
             "git": GitAgent(),
             "refactor": RefactorAgent(),
+            "documentation": DocumentationAgent(),
         }
 
     def classify(self, query: str) -> str:
@@ -52,32 +54,65 @@ Requête : {query}
         """Route the query to the appropriate agent based on simple keyword matching."""
         self.logger.info(f"Orchestrator received query: {query}")
 
-        # Simple routing logic based on keywords
-        if "echo" in query.lower():
-            self.logger.info("Routing to EchoAgent")
-            return self.agents["echo"].run(query[5:].strip())  # Remove "echo " prefix
+        q = query.lower().strip()
 
-        if "search" in query.lower():
-            self.logger.info("Routing to EmbeddingsAgent")
-            return self.agents["search"].run(query[7:].strip())  # Remove "search " prefix
+        # Echo
+        if q.startswith("echo:"):
+            return self.agents["echo"].run(query.replace("echo:", "").strip())
 
-        if "analyze" in query.lower():
-            self.logger.info("Routing to CodeAnalysisAgent")
+        # Search
+        if q.startswith("search:"):
+            return self.agents["search"].run(query.replace("search:", "").strip())
+
+        # Analyze
+        if q.startswith("analyze:"):
             path = query.replace("analyze:", "").strip()
             content = self.agents["filesystem"].read_file(path)
             return self.agents["code-analysis"].run(content)
 
-        if "clone" in query.lower():
-            self.logger.info("Routing to GitAgent")
+        # Clone repo
+        if q.startswith("clone:"):
             repo_url = query.replace("clone:", "").strip()
             return self.agents["git"].clone(repo_url)
 
-        if "refactor" in query.lower():
-            self.logger.info("Routing to RefactorAgent")
+        # List files in repo
+        if q.startswith("list:"):
+            repo_name = query.replace("list:", "").strip()
+            return self.agents["git"].list_files(repo_name)
+
+        # List python files in repo
+        if q.startswith("list-py:"):
+            repo_name = query.replace("list-py:", "").strip()
+            return self.agents["git"].list_python_files(repo_name)
+
+        # Open file
+        if q.startswith("open:"):
+            repo, path = query.replace("open:", "").strip().split("/", 1)
+            return self.agents["git"].open_file(repo, path)
+
+        # Refactor
+        if q.startswith("refactor:"):
             path = query.replace("refactor:", "").strip()
             content = self.agents["filesystem"].read_file(path)
             new_code = self.agents["refactor"].generate_refactor(content)
             return self.agents["refactor"].rewrite_file(path, new_code)
+
+        # Documentation
+        if q.startswith("doc:"):
+            path = query.replace("doc:", "").strip()
+            return self.agents["documentation"].document_file(path)
+
+        if q.startswith("doc-readme:"):
+            repo = query.replace("doc-readme:", "").strip()
+            return self.agents["documentation"].generate_readme(f"/tmp/repos/{repo}")
+
+        if q.startswith("doc-api:"):
+            repo = query.replace("doc-api:", "").strip()
+            return self.agents["documentation"].generate_api_docs(f"/tmp/repos/{repo}")
+
+        if q.startswith("doc-arch:"):
+            repo = query.replace("doc-arch:", "").strip()
+            return self.agents["documentation"].generate_architecture(f"/tmp/repos/{repo}")
 
         agent_name = self.classify(query)
         self.logger.info(f"Classifier selected agent: {agent_name}")
