@@ -7,6 +7,7 @@ from app.agents.git_agent import GitAgent
 from app.agents.llm_agent import LLMAgent
 from app.agents.refactor_agent import RefactorAgent
 from app.agents.tests_agent import TestsAgent
+from app.agents.workflow_agent import WorkflowAgent
 from app.core.logger import get_logger
 
 
@@ -30,6 +31,7 @@ class Orchestrator:
             "refactor": RefactorAgent(),
             "documentation": DocumentationAgent(),
             "tests": TestsAgent(),
+            "workflow": WorkflowAgent(self),
         }
 
     def classify(self, query: str) -> str:
@@ -114,7 +116,9 @@ Requête : {query}
 
         if q.startswith("doc-arch:"):
             repo = query.replace("doc-arch:", "").strip()
-            return self.agents["documentation"].generate_architecture(f"/tmp/repos/{repo}")
+            return self.agents["documentation"].generate_architecture(
+                f"/tmp/repos/{repo}"
+            )
 
         # Tests
         if q.startswith("test:"):
@@ -128,6 +132,11 @@ Requête : {query}
         if q.startswith("test-class:"):
             file_path = query.replace("test-class:", "").strip()
             return self.agents["tests"].generate_tests_for_class(file_path)
+
+        # Workflow
+        if q.startswith("workflow:"):
+            repo_url = query.replace("workflow:", "").strip()
+            return self.agents["workflow"].full_workflow(repo_url)
 
         agent_name = self.classify(query)
         self.logger.info(f"Classifier selected agent: {agent_name}")
