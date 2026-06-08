@@ -6,6 +6,7 @@ from app.agents.file_system_agent import FileSystemAgent
 from app.agents.git_agent import GitAgent
 from app.agents.llm_agent import LLMAgent
 from app.agents.refactor_agent import RefactorAgent
+from app.agents.tests_agent import TestsAgent
 from app.core.logger import get_logger
 
 
@@ -28,6 +29,7 @@ class Orchestrator:
             "git": GitAgent(),
             "refactor": RefactorAgent(),
             "documentation": DocumentationAgent(),
+            "tests": TestsAgent(),
         }
 
     def classify(self, query: str) -> str:
@@ -113,6 +115,19 @@ Requête : {query}
         if q.startswith("doc-arch:"):
             repo = query.replace("doc-arch:", "").strip()
             return self.agents["documentation"].generate_architecture(f"/tmp/repos/{repo}")
+
+        # Tests
+        if q.startswith("test:"):
+            file_path = query.replace("test:", "").strip()
+            return self.agents["tests"].generate_tests_for_file(file_path)
+
+        if q.startswith("test-api:"):
+            repo_path = query.replace("test-api:", "").strip()
+            return self.agents["tests"].generate_api_tests(f"/tmp/repos/{repo_path}")
+
+        if q.startswith("test-class:"):
+            file_path = query.replace("test-class:", "").strip()
+            return self.agents["tests"].generate_tests_for_class(file_path)
 
         agent_name = self.classify(query)
         self.logger.info(f"Classifier selected agent: {agent_name}")
