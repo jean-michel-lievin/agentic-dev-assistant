@@ -39,6 +39,9 @@ ignore = [
     "D203", # one-blank-line-before-class
     "D213", # multi-line docstring summary
 ]
+exclude = [
+    "tests",
+]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -48,3 +51,9 @@ line-ending = "lf"
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
 combine-as-imports = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+]

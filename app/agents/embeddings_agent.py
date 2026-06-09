@@ -3,7 +3,7 @@ from app.core.embeddings import EmbeddingsEngine
 
 
 class EmbeddingsAgent(BaseAgent):
-    def __init__(self, repo_path: str, embedding_path: str):
+    def __init__(self, repo_path: str = "app/", embedding_path: str = "data/embeddings.pkl"):
         super().__init__("embeddings-agent")
         self.repo_path = repo_path
         self.embedding_path = embedding_path

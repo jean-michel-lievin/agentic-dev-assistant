@@ -45,9 +45,7 @@ class WorkflowAgent(BaseAgent):
         # 5. Refactoring
         logs.append("=== REFACTOR ===")
         new_code = self.orchestrator.agents["refactor"].generate_refactor(content)
-        refactor_result = self.orchestrator.agents["refactor"].rewrite_file(
-            first_file, new_code
-        )
+        refactor_result = self.orchestrator.agents["refactor"].rewrite_file(first_file, new_code)
         logs.append(refactor_result)
 
         # 6. Tests

@@ -116,9 +116,7 @@ Requête : {query}
 
         if q.startswith("doc-arch:"):
             repo = query.replace("doc-arch:", "").strip()
-            return self.agents["documentation"].generate_architecture(
-                f"/tmp/repos/{repo}"
-            )
+            return self.agents["documentation"].generate_architecture(f"/tmp/repos/{repo}")
 
         # Tests
         if q.startswith("test:"):
